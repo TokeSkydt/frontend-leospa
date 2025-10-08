@@ -15,6 +15,8 @@ export async function getHeroData(): Promise<hero> {
   return heroToShow; // return hero or throw error if none found
 }
 
+
+
 export type hero = {
   show: boolean;
   _id: string;

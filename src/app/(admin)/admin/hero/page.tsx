@@ -1,115 +1,116 @@
 "use client"
 
 import React, { useState } from 'react'
+import NewHeroModal from '@/admincomponents/NewHeroModal';
+import { getHeroData } from '@/data/HeroData';
 
-interface Hero {
-  title1: string;
-  title2: string;
-  content: string;
-  link: string;
-  show: boolean;
+function Submit({
+  value,
+  children,
+}: {
+  value: "create" | "modify" | "delete";
+  children: React.ReactNode;
+}) {
+  const { pending } = useFormStatus();
+  return (
+    <button
+      type="submit"
+      name="intent"
+      value={value}
+      disabled={pending}
+      className="rounded-xl border px-4 py-2"
+    >
+      {pending ? "Working…" : children}
+    </button>
+  );
 }
 
 function page() {
-  const [form, setForm] = useState<Hero>({
-    title1: "",
-    title2: "",
-    content: "",
-    link: "",
-    show: false,
-  })
 
-  const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState("");
+  const [treatments, setTreatments] = useState<HeroData[]>([]);
+  const [selectedTreatment, setSelectedTreatment] = useState<string>("");
+  const [modalType, setModalType] = useState<"new" | "delete" | null>(null);
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    const { name, value, type } = e.target as HTMLInputElement | HTMLTextAreaElement;
-    setForm({
-      ...form,
-      [name]: type === "checkbox" ? (e.target as HTMLInputElement).checked : value,
-    });
+  const refreshTreatments = async () => {
+    const data = await getHeroData();
+    setTreatments(data);
+    setSelectedTreatment(data?.[0]?._id ?? "");
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setMessage("");
-
-    try {
-      const res = await fetch("http://localhost:5029/hero/admin", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(form),
-      });
-
-      if (!res.ok) throw new Error("Failed to create hero");
-
-      setMessage("✅ Hero created successfully!");
-      setForm({ title1: "", title2: "", content: "", link: "", show: false });
-    } catch (err: any) {
-      setMessage("❌" + err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
+  useEffect(() => {
+    refreshTreatments();
+  }, []);
 
   return (
-    <div className="max-w-lg mx-auto mt-10 p-6 bg-white rounded-2xl shadow">
-      <h1 className="text-2xl font-bold mb-4">Create New Hero</h1>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <input
-          name="title1"
-          placeholder="Title 1"
-          value={form.title1}
-          onChange={handleChange}
-          className="border p-2 w-full rounded"
-        />
-        <input
-          name="title2"
-          placeholder="Title 2"
-          value={form.title2}
-          onChange={handleChange}
-          className="border p-2 w-full rounded"
-        />
-        <textarea
-          name="content"
-          placeholder="Content"
-          value={form.content}
-          onChange={handleChange}
-          className="border p-2 w-full rounded"
-        />
-        <input
-          name="link"
-          placeholder="YouTube Link"
-          value={form.link}
-          onChange={handleChange}
-          className="border p-2 w-full rounded"
-        />
-        <label className="flex items-center space-x-2">
-          <input
-            type="checkbox"
-            name="show"
-            checked={form.show}
-            onChange={handleChange}
+    <form className="space-y-4">
+      {/* Modals */}
+      <div className="z-40">
+        {/* {modalType === "delete" && (
+            <ConFirmDelete
+              modal={true}
+              close={() => setModalType(null)}
+              id={selectedTreatment}
+              refresh={refreshTreatments}
+            />
+          )} */}
+        {modalType === "new" && (
+          <NewHeroModal
+            modal={true}
+            close={() => setModalType(null)}
+            refresh={refreshTreatments}
           />
-          <span>Show Hero on Homepage</span>
-        </label>
+        )}
+      </div>
+
+      <label className="block text-sm font-medium">
+        Treatment
+        <select
+          name="treatmentId"
+          className="mt-1 block w-64 rounded border p-2"
+          value={selectedTreatment}
+          onChange={(e) => setSelectedTreatment(e.target.value)}
+          disabled={!treatments.length}
+        >
+          {treatments.map((t) => (
+            <option key={t._id} value={t._id}>
+              {t.title}
+            </option>
+          ))}
+        </select>
+      </label>
+
+      <div className="flex gap-3">
+        <button
+          type="button"
+          className="border border-black rounded-2xl px-4 py-2 cursor-pointer bg-green-600 text-white"
+          onClick={() => setModalType("new")}
+        >
+          Post
+        </button>
+
+        <Submit value="modify">Ret</Submit>
 
         <button
-          type="submit"
-          disabled={loading}
-          className="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700"
+          type="button"
+          className="border border-black rounded-2xl px-4 py-2 cursor-pointer bg-red-600 text-white"
+          onClick={() => setModalType("delete")}
+          disabled={!selectedTreatment}
         >
-          {loading ? "Creating..." : "Create Hero"}
+          Delete
         </button>
-      </form>
+      </div>
+    </form>
+  );
 
-      {message && <p className="mt-4 text-center">{message}</p>}
-    </div>
+
+
+
+  return (
+    <section>
+
+    </section>
+
+
   )
 }
 
