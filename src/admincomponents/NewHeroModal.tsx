@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState } from "react";
-import { postTreatment, treatmentsData, NewTreatment } from "@/data/TreatmentData";
 
 type Props = {
   modal: boolean;
@@ -9,26 +8,24 @@ type Props = {
   refresh: () => void;
 };
 
-interface Hero {
+export interface HeroData {
   title1: string;
   title2: string;
   content: string;
   link: string;
   show: boolean;
-};
+}
 
 const NewHeroModal = ({ modal, close, refresh }: Props) => {
+  if (!modal) return null; // Hide modal if not active
 
-  if (!modal) return null; // 👈 return null, not false
-
-
-  const [form, setForm] = useState<Hero>({
+  const [form, setForm] = useState<HeroData>({
     title1: "",
     title2: "",
     content: "",
     link: "",
     show: false,
-  })
+  });
 
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
@@ -60,68 +57,81 @@ const NewHeroModal = ({ modal, close, refresh }: Props) => {
       if (!res.ok) throw new Error("Failed to create hero");
 
       setMessage("✅ Hero created successfully!");
-      setForm({ title1: "", title2: "", content: "", link: "", show: false });
+      await refresh(); // 👈 Refresh hero list
+      close(); // 👈 Close modal
     } catch (err: any) {
-      setMessage("❌" + err.message);
+      setMessage("❌ " + err.message);
     } finally {
       setLoading(false);
     }
   };
 
-
-
   return (
-    <div className="max-w-lg mx-auto mt-10 p-6 bg-white rounded-2xl shadow">
-      <h1 className="text-2xl font-bold mb-4">Create New Hero</h1>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <input
-          name="title1"
-          placeholder="Title 1"
-          value={form.title1}
-          onChange={handleChange}
-          className="border p-2 w-full rounded"
-        />
-        <input
-          name="title2"
-          placeholder="Title 2"
-          value={form.title2}
-          onChange={handleChange}
-          className="border p-2 w-full rounded"
-        />
-        <textarea
-          name="content"
-          placeholder="Content"
-          value={form.content}
-          onChange={handleChange}
-          className="border p-2 w-full rounded"
-        />
-        <input
-          name="link"
-          placeholder="YouTube Link"
-          value={form.link}
-          onChange={handleChange}
-          className="border p-2 w-full rounded"
-        />
-        <label className="flex items-center space-x-2">
+    <div className="fixed inset-0 bg-black bg-opacity-40 z-50 flex justify-center items-center">
+      <div className="max-w-lg w-full bg-white rounded-2xl shadow p-6">
+        <h1 className="text-2xl font-bold mb-4">Create New Hero</h1>
+        <form onSubmit={handleSubmit} className="space-y-4">
           <input
-            type="checkbox"
-            name="show"
-            checked={form.show}
+            name="title1"
+            placeholder="Title 1"
+            value={form.title1}
             onChange={handleChange}
+            className="border p-2 w-full rounded"
+            required
           />
-          <span>Show Hero on Homepage</span>
-        </label>
+          <input
+            name="title2"
+            placeholder="Title 2"
+            value={form.title2}
+            onChange={handleChange}
+            className="border p-2 w-full rounded"
+            required
+          />
+          <textarea
+            name="content"
+            placeholder="Content"
+            value={form.content}
+            onChange={handleChange}
+            className="border p-2 w-full rounded"
+            required
+          />
+          <input
+            name="link"
+            placeholder="YouTube Link"
+            value={form.link}
+            onChange={handleChange}
+            className="border p-2 w-full rounded"
+          />
+          <label className="flex items-center space-x-2">
+            <input
+              type="checkbox"
+              name="show"
+              checked={form.show}
+              onChange={handleChange}
+            />
+            <span>Show Hero on Homepage</span>
+          </label>
 
-        <button
-          type="submit"
-          disabled={loading}
-          className="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700"
-        >
-          {loading ? "Creating..." : "Create Hero"}
-        </button>
-      </form>
+          <div className="flex justify-end gap-2 pt-4">
+            <button
+              type="button"
+              onClick={close}
+              className="px-4 py-2 rounded bg-gray-300 hover:bg-gray-400"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              disabled={loading}
+              className="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700"
+            >
+              {loading ? "Creating..." : "Create Hero"}
+            </button>
+          </div>
+        </form>
 
-      {message && <p className="mt-4 text-center">{message}</p>}
+        {message && <p className="mt-4 text-center">{message}</p>}
+      </div>
     </div>
   );
 };

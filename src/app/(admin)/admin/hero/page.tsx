@@ -1,8 +1,17 @@
 "use client"
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import NewHeroModal from '@/admincomponents/NewHeroModal';
-import { getHeroData } from '@/data/HeroData';
+import { getAllHeroes } from '@/data/HeroData';
+import { useFormStatus } from "react-dom";
+import { HeroData as ImportedHeroData } from '@/admincomponents/NewHeroModal';
+import ConFirmDeleteHero from '@/admincomponents/ConfirmDeleteHero';
+import EditHeroModal from '@/admincomponents/EditHero';
+
+type HeroData = ImportedHeroData & {
+  _id: string;
+};
+
 
 function Submit({
   value,
@@ -27,53 +36,62 @@ function Submit({
 
 function page() {
 
-  const [treatments, setTreatments] = useState<HeroData[]>([]);
-  const [selectedTreatment, setSelectedTreatment] = useState<string>("");
-  const [modalType, setModalType] = useState<"new" | "delete" | null>(null);
+  const [hero, setHero] = useState<HeroData[]>([]);
+  const [selectedHero, setSelectedHero] = useState<string>("");
+  const [modalType, setModalType] = useState<"new" | "delete" | "modify" | null>(null);
 
-  const refreshTreatments = async () => {
-    const data = await getHeroData();
-    setTreatments(data);
-    setSelectedTreatment(data?.[0]?._id ?? "");
+  const refreshHero = async () => {
+    const data = await getAllHeroes();
+    setHero(data);
+    setSelectedHero(data?.[0]?._id ?? "");
   };
 
   useEffect(() => {
-    refreshTreatments();
+    refreshHero();
   }, []);
 
   return (
-    <form className="space-y-4">
+    <section className="space-y-4">
       {/* Modals */}
       <div className="z-40">
-        {/* {modalType === "delete" && (
-            <ConFirmDelete
-              modal={true}
-              close={() => setModalType(null)}
-              id={selectedTreatment}
-              refresh={refreshTreatments}
-            />
-          )} */}
+        {modalType === "delete" && (
+          <ConFirmDeleteHero
+            modal={true}
+            close={() => setModalType(null)}
+            id={selectedHero}
+            refresh={refreshHero}
+          />
+        )}
         {modalType === "new" && (
           <NewHeroModal
             modal={true}
             close={() => setModalType(null)}
-            refresh={refreshTreatments}
+            refresh={refreshHero}
+          />
+        )}
+
+        {modalType === "modify" && (
+          <EditHeroModal
+            modal={true}
+            close={() => setModalType(null)}
+            id={selectedHero}
+            refresh={refreshHero}
           />
         )}
       </div>
 
       <label className="block text-sm font-medium">
-        Treatment
+        Hero
         <select
-          name="treatmentId"
+          name="heroId"
           className="mt-1 block w-64 rounded border p-2"
-          value={selectedTreatment}
-          onChange={(e) => setSelectedTreatment(e.target.value)}
-          disabled={!treatments.length}
+          value={selectedHero}
+          onChange={(e) => setSelectedHero(e.target.value)}
+          disabled={!hero.length}
         >
-          {treatments.map((t) => (
+          {hero.map((t) => (
             <option key={t._id} value={t._id}>
-              {t.title}
+              {t.title1}
             </option>
           ))}
         </select>
@@ -88,30 +106,26 @@ function page() {
           Post
         </button>
 
-        <Submit value="modify">Ret</Submit>
+        <button
+          type="button"
+          className="border border-black rounded-2xl px-4 py-2 cursor-pointer bg-yellow-500 text-white"
+          onClick={() => setModalType("modify")}
+          disabled={!selectedHero}
+        >
+          Ret
+        </button>
 
         <button
           type="button"
           className="border border-black rounded-2xl px-4 py-2 cursor-pointer bg-red-600 text-white"
           onClick={() => setModalType("delete")}
-          disabled={!selectedTreatment}
+          disabled={!selectedHero}
         >
           Delete
         </button>
       </div>
-    </form>
-  );
-
-
-
-
-  return (
-    <section>
-
     </section>
-
-
-  )
+  );
 }
 
 
