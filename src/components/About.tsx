@@ -5,16 +5,31 @@ import Image from 'next/image'
 
 
 const clientsImages = [
+  { src: "/img/extra_procedures_etc/CelluliteReduction.jpg", alt: "leaf" },
+  { src: "/img/extra_procedures_etc/facial.jpg", alt: "leaf" },
+  { src: "/img/extra_procedures_etc/hydrating-mani-pedi.jpg", alt: "leaf" },
   { src: "/img/extra_procedures_etc/4.jpg", alt: "leaf" },
   { src: "/img/extra_procedures_etc/5.jpg", alt: "leaf" },
   { src: "/img/extra_procedures_etc/6.jpg", alt: "leaf" },
   { src: "/img/extra_procedures_etc/7.jpg", alt: "leaf" },
 ]
 
+/* ChatGpt: Helper function to shuffle the images randomly
+.sort() expects a comparator function (a, b) => number. If the result is negative, a comes first; positive, b comes first; zero means leave them equal.
+Here, for each pair of items, the comparator returns a random positive or negative number: 0.5 - Math.random() yields a value in the range (-0.5, +0.5).
+This effectively gives a “random” ordering, as each comparison is random.
+After this, shuffled is in a random order
+slice(0, count) returns a new array containing the first count elements.
+If count is greater than the length of the array, slice just returns as many as there are.
+*/
+const getRandomImages = (images: any[], count = 4) => {
+  const shuffled = [...images].sort(() => 0.5 - Math.random())
+  return shuffled.slice(0, count)
+}
+
 const About = async () => {
   const About = await getAbout();
-
-
+  const randomImages = getRandomImages(clientsImages)
   return (
 
     <div>
@@ -39,7 +54,7 @@ const About = async () => {
       </div>
 
       <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-1 mt-10'>
-        {clientsImages.map((client, index) => (
+        {randomImages.map((client, index) => (
           <Image
             key={index}
             src={client.src}
