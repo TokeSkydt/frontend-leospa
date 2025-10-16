@@ -10,7 +10,7 @@ const adminList: Routs[] = [
 
   { label: "front page", href: "/" },
   { label: "treatment", href: "/admin/treatment" },
-  { label: "about", href: "/about" },
+  { label: "about", href: "/admin/about" },
   { label: "Hero", href: "/admin/hero" },
   { label: "Footer", href: "/footer" },
   { label: "contact", href: "/contact" },
