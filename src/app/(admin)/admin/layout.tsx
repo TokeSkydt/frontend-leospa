@@ -1,6 +1,5 @@
-// app/admin/layout.tsx
 import "../../globals.css";
-import AdminSidebar from "@/admincomponents/AdminSidebar";
+import AdminLayoutClient from "./clientlayout";
 
 export const metadata = {
   title: "Admin Panel",
@@ -10,10 +9,8 @@ export const metadata = {
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body className="bg-gray-100">
-        <AdminSidebar />
-        <main className="max-w-4xl m-auto absolute top-2 left-75">{children}</main>
-
+      <body>
+        <AdminLayoutClient>{children}</AdminLayoutClient>
       </body>
     </html>
   );

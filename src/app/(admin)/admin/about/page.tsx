@@ -12,7 +12,7 @@ const CKEditorClient = dynamic(
 export default function EditorPage() {
     const [content, setContent] = useState<string>("");
     let title = "";
-    
+
     async function fetchContentFromServer(): Promise<string> {
         const res = await getAbout();
         title = res.title;
@@ -32,9 +32,9 @@ export default function EditorPage() {
                 fetchContent={fetchContentFromServer}
                 onChange={(html) => setContent(html)}
             />
-            <button onClick={handleSave}>Save</button>
-            <div>
-                <h2>Preview</h2>
+            <button onClick={handleSave} className="bg-green-600 p-2 cursor-pointer mt-2 rounded-2xl">Save</button>
+            <div className="border mt-4 ">
+                <h2 className="text-2xl font-bold">Preview</h2>
                 <div dangerouslySetInnerHTML={{ __html: content }} />
             </div>
         </div>

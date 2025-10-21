@@ -3,7 +3,7 @@ import { useState } from "react";
 import { deleteTreatment } from "@/data/TreatmentData";
 
 
-const Edit = () => {
+const TreatmentEdit = () => {
 
   return (
     <div className="fixed inset-0 bg-black/40 flex justify-center items-center z-50">
@@ -24,4 +24,4 @@ const Edit = () => {
   )
 }
 
-export default Edit
+export default TreatmentEdit
