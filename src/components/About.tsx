@@ -43,7 +43,7 @@ const About = async () => {
           <Image src="/img/favicon.png" alt="icon" width={75} height={75} />
         </div>
         <h2 className='text-3xl font-bold mb-4'>{About.title}</h2>
-        <p>{parse(About.content)}</p>
+        {parse(About.content)}
         <button className='uppercase bg-red-300 py-2 px-4 rounded-3xl mt-5 text-white'>read more</button>
         <div>
         </div>

@@ -34,7 +34,7 @@ export default function AdminLayoutClient({ children }: { children: React.ReactN
   return (
     <div className="bg-gray-100 min-h-screen flex">
       <AdminSidebar />
-      <main className="flex-1 max-w-4xl m-auto p-4">{children}</main>
+      <main className="flex-1 max-w-4xl p-4">{children}</main>
     </div>
   );
 }

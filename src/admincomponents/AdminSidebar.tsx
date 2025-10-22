@@ -1,5 +1,7 @@
 import React from 'react'
 import Link from 'next/link';
+import { LogOut } from 'lucide-react';
+import LogoutButton from './logoutbtn';
 
 type Routs = {
   label: string;
@@ -9,6 +11,7 @@ type Routs = {
 const adminList: Routs[] = [
 
   { label: "front page", href: "/" },
+  { label: "admin user", href: "/adminuser" },
   { label: "treatment", href: "/admin/treatment" },
   { label: "about", href: "/admin/about" },
   { label: "Hero", href: "/admin/hero" },
@@ -30,6 +33,10 @@ function AdminSidebar() {
             {item.label}
           </Link>
         ))}
+        <div>
+          <LogoutButton />
+        </div>
+
       </div>
     </nav>
   )
