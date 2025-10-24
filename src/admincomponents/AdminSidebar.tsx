@@ -1,6 +1,5 @@
 import React from 'react'
 import Link from 'next/link';
-import { LogOut } from 'lucide-react';
 import LogoutButton from './logoutbtn';
 
 type Routs = {
@@ -11,7 +10,7 @@ type Routs = {
 const adminList: Routs[] = [
 
   { label: "front page", href: "/" },
-  { label: "admin user", href: "/adminuser" },
+  { label: "admin user", href: "/admin/adminuser" },
   { label: "treatment", href: "/admin/treatment" },
   { label: "about", href: "/admin/about" },
   { label: "Hero", href: "/admin/hero" },

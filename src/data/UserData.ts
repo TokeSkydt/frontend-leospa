@@ -69,3 +69,74 @@ export async function getUserData() {
     return [];
   }
 }
+
+//delete data 
+
+export async function deleteUser(id: number) {
+  const token = getToken();
+
+  try {
+    const res = await fetch(`http://localhost:5029/user/admin/${id}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: token ? `Bearer ${token}` : "",
+      },
+    });
+
+    if (!res.ok) {
+      throw new Error("Fejl ved sletning af bruger");
+    }
+
+    return true;
+  } catch (err) {
+    console.error("Fejl ved sletning:", err);
+    return false;
+  }
+}
+
+// create user
+export async function createUser(name: string, email: string, password: string) {
+  const token = getToken();
+
+  try {
+    const res = await fetch("http://localhost:5029/user/admin", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: token ? `Bearer ${token}` : "",
+      },
+      body: JSON.stringify({ name, email, password }),
+    });
+
+    if (!res.ok) throw new Error("Fejl ved oprettelse af bruger");
+
+    const data = await res.json();
+    return data;
+  } catch (err) {
+    console.error("Fejl ved oprettelse:", err);
+    return null;
+  }
+}
+
+export async function updateUser(id: number, name: string, email: string) {
+  const token = getToken();
+  try {
+    const res = await fetch(`http://localhost:5029/user/admin/${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: token ? `Bearer ${token}` : "",
+      },
+      body: JSON.stringify({ name, email }),
+    });
+    if (!res.ok) throw new Error("Fejl ved opdatering af bruger");
+    return await res.json();
+  } catch (err) {
+    console.error("Fejl ved opdatering:", err);
+    return null;
+  }
+}
+
+
+
