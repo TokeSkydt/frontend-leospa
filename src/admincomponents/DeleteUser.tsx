@@ -2,14 +2,15 @@ import React from "react";
 import { deleteUser } from "@/data/UserData";
 
 interface Props {
-  user: { id: number; name: string };
+  user: { _id: string; name: string; email: string };
   onClose: () => void;
   onDeleted: () => void;
+
 }
 
 export default function DeleteUser({ user, onClose, onDeleted }: Props) {
   const handleDelete = async () => {
-    const success = await deleteUser(user.id);
+    const success = await deleteUser(user._id);
     if (success) {
       onDeleted();
       onClose();

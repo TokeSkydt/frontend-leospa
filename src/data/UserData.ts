@@ -49,7 +49,7 @@ export async function logoutUser() {
   }
 }
 
-//get user data
+//get all user data
 
 export async function getUserData() {
   try {
@@ -70,9 +70,29 @@ export async function getUserData() {
   }
 }
 
+// get user by id
+export async function getUserById(id: number): Promise<user | null> {
+  try {
+    const res = await fetch(`http://localhost:5029/user/admin/${id}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    if (!res.ok) {
+      throw new Error("Kunne ikke hente bruger");
+    }
+    const data = await res.json();
+    return data; // Assuming backend returns a user object
+  } catch (err) {
+    console.error("Fejl ved hent af bruger:", err);
+    return null;
+  }
+}
+
 //delete data 
 
-export async function deleteUser(id: number) {
+export async function deleteUser(id: string) {
   const token = getToken();
 
   try {
@@ -119,7 +139,49 @@ export async function createUser(name: string, email: string, password: string) 
   }
 }
 
-export async function updateUser(id: number, name: string, email: string) {
+/* export async function updateHero(id: string, updatedData: Partial<hero>): Promise<hero> {
+  const res = await fetch(`http://localhost:5029/hero/admin/${id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(updatedData),
+  });
+
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(`Failed to update hero: ${text}`);
+  }
+
+  return res.json();
+} */
+
+export async function updateUser(id: string, updatedData: Partial<user>): Promise<user> {
+  const res = await fetch(`http://localhost:5029/user/admin/${id}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(updatedData),
+  });
+
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(`Failed to update user: ${text}`);
+  }
+
+  return res.json();
+}
+
+
+export type user = {
+  _id: string;
+  name: string;
+  email: string;
+  admin: boolean;
+};
+
+
+
+/* export async function updateUser(id: number, name: string, email: string) {
   const token = getToken();
   try {
     const res = await fetch(`http://localhost:5029/user/admin/${id}`, {
@@ -136,7 +198,7 @@ export async function updateUser(id: number, name: string, email: string) {
     console.error("Fejl ved opdatering:", err);
     return null;
   }
-}
+} */
 
 
 
