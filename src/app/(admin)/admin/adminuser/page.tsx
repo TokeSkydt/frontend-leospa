@@ -33,15 +33,19 @@ export default function AdminUsersPage() {
   // 🔹 Toggle admin status
   const handleToggleAdmin = async (u: user, next: boolean) => {
     try {
-      // Optimistisk update i UI
+      // Optimistisk UI-opdatering
       setUsers(users.map(user => user._id === u._id ? { ...user, admin: next } : user));
 
-      // Send opdatering til backend
-      await updateUser(u._id, { admin: next });
+      // Send hele brugerobjektet med opdateret admin til backend
+      await updateUser(u._id, {
+        name: u.name,
+        email: u.email,
+        admin: next
+      });
     } catch (err) {
       console.error("Fejl ved opdatering af admin:", err);
       // Rollback hvis backend fejler
-      setUsers(users.map(user => user._id === u._id ? { ...user, admin: u.admin } : user));
+      setUsers(users.map(user => user._id === u._id ? u : user));
     }
   };
 

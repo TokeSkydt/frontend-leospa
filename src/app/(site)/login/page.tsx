@@ -15,8 +15,13 @@ export default function LoginPage() {
     setError(null);
 
     try {
-      await loginUser(username, password);
-      router.push("/admin"); // gå til admin dashboard
+      const user = await loginUser(username, password);
+
+      if (user?.admin === true) {
+        router.push("/admin"); // gå til admin dashboard
+      } else {
+        setError("Du har ikke administratorrettigheder");
+      }
     } catch (err: any) {
       setError(err.message || "Login fejlede");
     }
